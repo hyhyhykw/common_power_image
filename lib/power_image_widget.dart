@@ -218,6 +218,7 @@ class PowerImageWidget extends StatelessWidget {
         frameBuilder: frameBuilder,
         errorBuilder: errorBuilder,
         fit: fit,
+        color: imageColor,
         alignment: alignment,
         excludeFromSemantics: excludeFromSemantics,
         semanticLabel: semanticLabel,
