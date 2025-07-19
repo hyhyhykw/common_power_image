@@ -178,24 +178,6 @@ class PowerImageWidget extends StatelessWidget {
       );
     }
 
-    String? color;
-    if (imageColor != null) {
-      color = '#'
-          '${_toColorValue(imageColor.a)}'
-          '${_toColorValue(imageColor.r)}'
-          '${_toColorValue(imageColor.g)}'
-          '${_toColorValue(imageColor.b)}';
-    }
-
-    final json = jsonEncode({
-      'imageType': imageType,
-      'drawable': drawable,
-      'url': src,
-      'renderWidth': renderWidth ?? -1,
-      'renderHeight': renderHeight ?? -1,
-      'color': color
-    });
-
     final placeholder = _generatePlaceholder();
 
     ImageFrameBuilder? frameBuilder = placeholder == null
@@ -227,6 +209,38 @@ class PowerImageWidget extends StatelessWidget {
         };
       }
     }
+
+    if (imageType == 'asset') {
+      return Image.asset(
+        src,
+        width: width,
+        height: height,
+        frameBuilder: frameBuilder,
+        errorBuilder: errorBuilder,
+        fit: fit,
+        alignment: alignment,
+        excludeFromSemantics: excludeFromSemantics,
+        semanticLabel: semanticLabel,
+      );
+    }
+
+    String? color;
+    if (imageColor != null) {
+      color = '#'
+          '${_toColorValue(imageColor.a)}'
+          '${_toColorValue(imageColor.r)}'
+          '${_toColorValue(imageColor.g)}'
+          '${_toColorValue(imageColor.b)}';
+    }
+
+    final json = jsonEncode({
+      'imageType': imageType,
+      'drawable': drawable,
+      'url': src,
+      'renderWidth': renderWidth ?? -1,
+      'renderHeight': renderHeight ?? -1,
+      'color': color
+    });
 
     final powerImage = PowerImage.options(
       PowerImageRequestOptions(
