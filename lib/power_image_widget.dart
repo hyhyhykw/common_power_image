@@ -7,6 +7,53 @@ import 'package:power_image/power_image.dart';
 import 'mobile_image.dart' if (dart.library.html) 'dart:html';
 import 'mobile_image.dart' if (dart.library.html) 'dart:ui_web' as ui;
 
+PowerImageRequestOptions powerOptions({
+  required String imageType,
+  required String url,
+  bool drawable = true,
+  int? renderWidth,
+  int? renderHeight,
+  String? color,
+  String? package,
+}) {
+  final json = jsonEncode({
+    'imageType': imageType,
+    'drawable': drawable,
+    'url': url,
+    'renderWidth': renderWidth ?? -1,
+    'renderHeight': renderHeight ?? -1,
+    'color': color
+  });
+
+  return PowerImageRequestOptions(
+    src: PowerImageRequestOptionsSrcAsset(src: json),
+    renderingType: renderingTypeExternal,
+    imageType: 'custom',
+  );
+}
+
+PowerImageProvider generateProvider({
+  required String imageType,
+  required String url,
+  bool drawable = true,
+  int? renderWidth,
+  int? renderHeight,
+  String? color,
+  String? package,
+}) {
+  return PowerImageProvider.options(
+    powerOptions(
+      imageType: imageType,
+      url: url,
+      drawable: drawable,
+      renderHeight: renderHeight,
+      renderWidth: renderWidth,
+      color: color,
+      package: package,
+    ),
+  );
+}
+
 class PowerImageWidget extends StatelessWidget {
   static const defaultPlaceholderColor = Color(0xffEAEAEA);
 
@@ -234,26 +281,22 @@ class PowerImageWidget extends StatelessWidget {
           '${_toColorValue(imageColor.b)}';
     }
 
-    final json = jsonEncode({
-      'imageType': imageType,
-      'drawable': drawable,
-      'url': src,
-      'renderWidth': renderWidth ?? -1,
-      'renderHeight': renderHeight ?? -1,
-      'color': color
-    });
-
+    final defaultFit = imageType == 'network' ? BoxFit.cover : BoxFit.contain;
     final powerImage = PowerImage.options(
-      PowerImageRequestOptions(
-        src: PowerImageRequestOptionsSrcAsset(src: json, package: package),
-        imageType: 'custom',
-        renderingType: renderingType,
+      powerOptions(
+        imageType: imageType,
+        drawable: drawable,
+        url: src,
+        renderWidth: renderWidth?.toInt(),
+        renderHeight: renderHeight?.toInt(),
+        color: color,
+        package: package,
       ),
       width: width,
       height: height,
       frameBuilder: frameBuilder,
       errorBuilder: errorBuilder,
-      fit: fit ?? (imageType == 'network' ? BoxFit.cover : BoxFit.contain),
+      fit: fit ?? defaultFit,
       alignment: alignment,
       excludeFromSemantics: excludeFromSemantics,
       semanticLabel: semanticLabel,
